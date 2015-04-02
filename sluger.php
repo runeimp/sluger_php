@@ -4,6 +4,7 @@
  * String slugification app
  *
  * ChangeLog:
+ *	2014-08-20	1.1.0	Updated the straight-single-quote and collon stripping with straight-double-quote and ‘smart’ quotes and turned functionalized the code.
  *	2014-08-15	1.0.0	Initial Script creation.
  */
 $pageDescription = 'This is a PHP tool for slugifying strings.';
@@ -11,7 +12,7 @@ $baseURL = '';
 $requestURL = $_SERVER['REQUEST_URI'];
 
 define('APP_NAME', 'PHP Sluger');
-define('APP_VERSION', '1.0.0');
+define('APP_VERSION', '1.1.0');
 define('APP_TITLE', APP_NAME.' v'.APP_VERSION);
 define('APP_TAGLINE', 'Text Slugifier');
 
@@ -20,19 +21,36 @@ define('APP_TAGLINE', 'Text Slugifier');
 $slug_src = empty($_POST['slug_src']) ? "An Example's ALL for you!" : $_POST['slug_src'];
 // exit('<pre>$_POST: '.print_r($_POST, true).'</pre>');
 
-$subject = strtolower($slug_src);
-$subject = str_replace('&', 'and', $subject);
+$subject = characterNormalize($slug_src);
 
-$pattern_strict = '/[^a-z0-9_-]/';
-$pattern_compact = '/--+/';
-$replacement = '-';
+$slug_strict = slugIt($subject);
 
-$slug_strict = preg_replace($pattern_strict, $replacement, $subject);
+$slug_compact = characterStrip($subject);
+$slug_compact = slugIt($slug_compact);
+$slug_compact = slugCompact($slug_compact);
 
-$subject_compact = preg_replace("/[':]/", '', $subject);
-$subject_compact = preg_replace($pattern_strict, $replacement, $subject_compact);
-$slug_compact = preg_replace($pattern_compact, $replacement, $subject_compact);
-$slug_compact = trim($slug_compact, '-');
+function characterNormalize($subject)
+{
+	$subject = strtolower($subject);
+	return str_replace('&', 'and', $subject);
+}
+
+function characterStrip($subject, $characters='\'"‘’“”:')
+{
+	$characters = '/['.preg_quote($characters).']/';
+	return preg_replace($characters, '', $subject);
+}
+
+function slugCompact($slug)
+{
+	$slug = preg_replace('/--+/', '-', $slug);
+	return trim($slug, '-');
+}
+
+function slugIt($subject)
+{
+	return preg_replace('/[^a-z0-9_-]/', '-', $subject);
+}
 
 function formInputChecked($name, $key=null)
 {
@@ -60,6 +78,7 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-US" dir="ltr">
 	<head>
 		<meta http-equiv="window-target" content="_top" /><!-- Jumps out of frames -->
+		<meta http-equiv="imagetoolbar" content="no" /><!-- Kill the IE 6 Image Toolbar -->
 		<meta http-equiv="X-UA-Compatible" content="IE=IE8" /><!-- Set IE Mode: IE5 (Quirks Mode), EmulateIE7, IE7 (Force Standards Mode), EmulateIE8, IE8 (Force Standards Mode), Edge (Highest Mode Available) -->
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="initial-scale=.3, minimum-scale=.1, maximum-scale=1" /><!-- for iPhone & Android -->
