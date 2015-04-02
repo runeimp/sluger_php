@@ -4,6 +4,7 @@
  * String slugification app
  *
  * ChangeLog:
+ *	2014-09-24	1.3.0	Added characters with diacrilics normalization.
  *	2014-09-17	1.2.1	Changed disabled input attributes to readonly. Updated footer, and page styling a bit.
  *	2014-08-25	1.2.0	Added source uppercase and lowercase output.
  *	2014-08-20	1.1.0	Updated the straight-single-quote and collon stripping with straight-double-quote and ‘smart’ quotes and turned functionalized the code.
@@ -14,7 +15,7 @@ $baseURL = '';
 $requestURL = $_SERVER['REQUEST_URI'];
 
 define('APP_NAME', 'PHP Sluger');
-define('APP_VERSION', '1.2.1');
+define('APP_VERSION', '1.3.0');
 define('APP_TITLE', APP_NAME.' v'.APP_VERSION);
 define('APP_TAGLINE', 'Text Slugifier');
 
@@ -39,6 +40,7 @@ $id_compact = str_replace('-', '_', $slug_compact);
 
 function characterNormalize($subject)
 {
+	$subject = normalize($subject);
 	$subject = strtolower($subject);
 	return str_replace('&', 'and', $subject);
 }
@@ -47,6 +49,25 @@ function characterStrip($subject, $characters='\'"‘’“”:')
 {
 	$characters = '/['.preg_quote($characters).']/';
 	return preg_replace($characters, '', $subject);
+}
+
+/**
+ * @see http://php.net/manual/en/function.strtr.php#90925
+ */
+function normalize($string)
+{
+	$table = array(
+		'Š'=>'S', 'š'=>'s', 'Đ'=>'Dj', 'đ'=>'dj', 'Ž'=>'Z', 'ž'=>'z', 'Č'=>'C', 'č'=>'c', 'Ć'=>'C', 'ć'=>'c',
+		'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A', 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E',
+		'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I', 'Ï'=>'I', 'Ñ'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O',
+		'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U', 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss',
+		'à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a', 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e',
+		'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i', 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ò'=>'o', 'ó'=>'o',
+		'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u', 'ú'=>'u', 'û'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b',
+		'ÿ'=>'y', 'Ŕ'=>'R', 'ŕ'=>'r',
+	);
+
+	return strtr($string, $table);
 }
 
 function slugCompact($slug)
