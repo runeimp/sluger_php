@@ -60,5 +60,6 @@ textarea: focus{
 }
 
 #commands{
-	float: right;
+	clear: both;
+	margin-top: .4em;
 }

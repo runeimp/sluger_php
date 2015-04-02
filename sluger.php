@@ -4,6 +4,7 @@
  * String slugification app
  *
  * ChangeLog:
+ *	2014-08-25	1.2.0	Added source uppercase and lowercase output.
  *	2014-08-20	1.1.0	Updated the straight-single-quote and collon stripping with straight-double-quote and ‘smart’ quotes and turned functionalized the code.
  *	2014-08-15	1.0.0	Initial Script creation.
  */
@@ -12,7 +13,7 @@ $baseURL = '';
 $requestURL = $_SERVER['REQUEST_URI'];
 
 define('APP_NAME', 'PHP Sluger');
-define('APP_VERSION', '1.1.0');
+define('APP_VERSION', '1.2.0');
 define('APP_TITLE', APP_NAME.' v'.APP_VERSION);
 define('APP_TAGLINE', 'Text Slugifier');
 
@@ -21,13 +22,18 @@ define('APP_TAGLINE', 'Text Slugifier');
 $slug_src = empty($_POST['slug_src']) ? "An Example's ALL for you!" : $_POST['slug_src'];
 // exit('<pre>$_POST: '.print_r($_POST, true).'</pre>');
 
-$subject = characterNormalize($slug_src);
+$source = characterNormalize($slug_src);
 
-$slug_strict = slugIt($subject);
+$slug_strict = slugIt($source);
+$slug_id_strict = str_replace('-', '_', $slug_strict);
 
-$slug_compact = characterStrip($subject);
+$slug_compact = characterStrip($source);
 $slug_compact = slugIt($slug_compact);
 $slug_compact = slugCompact($slug_compact);
+$slug_id_compact = str_replace('-', '_', $slug_compact);
+
+$source_uppercase = strtoupper($source);
+$source_lowercase = strtolower($source);
 
 function characterNormalize($subject)
 {
@@ -78,7 +84,6 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en-US" dir="ltr">
 	<head>
 		<meta http-equiv="window-target" content="_top" /><!-- Jumps out of frames -->
-		<meta http-equiv="imagetoolbar" content="no" /><!-- Kill the IE 6 Image Toolbar -->
 		<meta http-equiv="X-UA-Compatible" content="IE=IE8" /><!-- Set IE Mode: IE5 (Quirks Mode), EmulateIE7, IE7 (Force Standards Mode), EmulateIE8, IE8 (Force Standards Mode), Edge (Highest Mode Available) -->
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="initial-scale=.3, minimum-scale=.1, maximum-scale=1" /><!-- for iPhone & Android -->
@@ -105,6 +110,12 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 				</label><br />
 				<label>Slug Compact Output:
 					<input type="text" name="slug_compact" value="<?php echo $slug_compact ?>" disabled />
+				</label>
+				<label>Source UPPERCASE:
+					<input type="text" name="source_uppercase" value="<?php echo $source_uppercase ?>" disabled />
+				</label>
+				<label>Source lowercase:
+					<input type="text" name="source_lowercase" value="<?php echo $source_lowercase ?>" disabled />
 				</label>
 				<fieldset id="commands">
 					<input type="submit" name="cmd" />
