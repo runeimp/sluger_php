@@ -4,6 +4,7 @@
  * String slugification app
  *
  * ChangeLog:
+ *	2014-09-17	1.2.1	Changed disabled input attributes to readonly. Updated footer, and page styling a bit.
  *	2014-08-25	1.2.0	Added source uppercase and lowercase output.
  *	2014-08-20	1.1.0	Updated the straight-single-quote and collon stripping with straight-double-quote and ‘smart’ quotes and turned functionalized the code.
  *	2014-08-15	1.0.0	Initial Script creation.
@@ -13,7 +14,7 @@ $baseURL = '';
 $requestURL = $_SERVER['REQUEST_URI'];
 
 define('APP_NAME', 'PHP Sluger');
-define('APP_VERSION', '1.2.0');
+define('APP_VERSION', '1.2.1');
 define('APP_TITLE', APP_NAME.' v'.APP_VERSION);
 define('APP_TAGLINE', 'Text Slugifier');
 
@@ -24,16 +25,17 @@ $slug_src = empty($_POST['slug_src']) ? "An Example's ALL for you!" : $_POST['sl
 
 $source = characterNormalize($slug_src);
 
+$source_uppercase = strtoupper($source);
+$source_lowercase = strtolower($source);
+
 $slug_strict = slugIt($source);
-$slug_id_strict = str_replace('-', '_', $slug_strict);
 
 $slug_compact = characterStrip($source);
 $slug_compact = slugIt($slug_compact);
 $slug_compact = slugCompact($slug_compact);
-$slug_id_compact = str_replace('-', '_', $slug_compact);
 
-$source_uppercase = strtoupper($source);
-$source_lowercase = strtolower($source);
+$id_strict = str_replace('-', '_', $slug_strict);
+$id_compact = str_replace('-', '_', $slug_compact);
 
 function characterNormalize($subject)
 {
@@ -94,38 +96,55 @@ echo '<?xml version="1.0" encoding="UTF-8"?>';
 		<link rel="stylesheet" type="text/css" href="assets/css/sluger.css" media="all" />
 	</head>
 	<body>
-		<header>
+		<header id="page_header" class="page-header">
 			<h1>{APP_TITLE}</h1>
 			<h2>{APP_TAGLINE}</h2>
 		</header>
-		<main id="main_content" role="main">
+		<main id="main_content" class="main-content" role="main">
 			<!-- Main Content -->
 			<form method="post">
 				<label>Slug Source:
 					<input type="text" name="slug_src" value="<?php echo $slug_src ?>" />
 				</label>
+
+				<hr>
+
+				<fieldset id="commands">
+					<input type="submit" name="cmd" value="Submit Source" />
+				</fieldset>
+
 				<hr />
-				<label>Slug Strict Output:
-					<input type="text" name="slug_strict" value="<?php echo $slug_strict ?>" disabled />
-				</label><br />
-				<label>Slug Compact Output:
-					<input type="text" name="slug_compact" value="<?php echo $slug_compact ?>" disabled />
-				</label>
+
 				<label>Source UPPERCASE:
-					<input type="text" name="source_uppercase" value="<?php echo $source_uppercase ?>" disabled />
+					<input type="text" name="source_uppercase" value="<?php echo $source_uppercase ?>" readonly />
 				</label>
 				<label>Source lowercase:
-					<input type="text" name="source_lowercase" value="<?php echo $source_lowercase ?>" disabled />
+					<input type="text" name="source_lowercase" value="<?php echo $source_lowercase ?>" readonly />
 				</label>
-				<fieldset id="commands">
-					<input type="submit" name="cmd" />
-				</fieldset>
+
+				<hr />
+
+				<label>Slug Strict Output:
+					<input type="text" name="slug_strict" value="<?php echo $slug_strict ?>" readonly />
+				</label>
+				<label>Slug Compact Output:
+					<input type="text" name="slug_compact" value="<?php echo $slug_compact ?>" readonly />
+				</label>
+
+				<hr />
+				
+				<label>ID Strict:
+					<input type="text" name="id_strict" value="<?php echo $id_strict ?>" readonly />
+				</label>
+				<label>ID Compact:
+					<input type="text" name="id_compact" value="<?php echo $id_compact ?>" readonly />
+				</label>
 			</form>
 		</main>
 		<hr />
-		<footer id="page-footer">
-			<p><small>My awesome footer!</small></p>
-		</footer><!-- #page-footer -->
+		<footer id="page_footer" class="page-footer">
+			<p><small>String case converter, slug/HTML/CSS class generator, and HTML/CSS ID generator</small></p>
+		</footer><!-- #page_footer -->
 	</body>
 </html>
 <?php

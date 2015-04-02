@@ -13,7 +13,7 @@ body{
 	background: #F0F0F0;
 	font-family: "Myriad Pro", Helvetica, sans-serif;
 	margin: 0 auto;
-	padding: 10px 20px 0 20px;
+	padding: 10px 20px 1rem 20px;
 	width: 920px;
 }
 
@@ -31,6 +31,10 @@ h3{
 	font-size: 1.2em;
 }
 
+hr {
+	clear: both;
+}
+
 input {
 	float: right;
 	width: 70%;
@@ -39,7 +43,11 @@ input {
 input[type=submit] {
 	clear: both;
 	text-align: center;
-	width: 6em;
+	width: 10em;
+}
+
+label {
+	display: block;
 }
 
 object{outline: none;}
@@ -55,11 +63,22 @@ textarea{
 	overflow: auto;
 	width: 100%;
 }
-textarea: focus{
+textarea:focus {
 	height: 50em;
 }
 
-#commands{
+.page-footer {
+	background: #F6F6F6;
+	border: 2px dotted gray;
+	border-radius: .7em;
+	padding: 1em 0;
+}
+.page-footer > p {
+	text-align: center;
+}
+
+#commands {
 	clear: both;
-	margin-top: .4em;
+	display: block;
+	padding: .4em 0 1em 0;
 }
